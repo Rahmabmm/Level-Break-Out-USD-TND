@@ -232,7 +232,7 @@ This is an **educational project** created for learning purposes:
 
 **Key Takeaway**: This project demonstrates that simply detecting classical chart patterns is not sufficient for profitable trading. It's a valuable learning experience about the challenges of algorithmic trading and the importance of rigorous testing.
 
-** Explicitly states:**
+**Explicitly states:**
 - These patterns did NOT prove profitable in testing
 - This project is shared to demonstrate technical skills, not trading profitability
 - No trading decisions should be based on this code
