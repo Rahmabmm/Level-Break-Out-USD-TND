@@ -1,4 +1,4 @@
-# USD/TND Price Analysis & Trend Detection
+# USD/TND Price Analysis
 
 A Python-based technical analysis tool for identifying important price levels, local extremes, and trend directions in USD/TND (US Dollar to Tunisian Dinar) exchange rate data.
 
