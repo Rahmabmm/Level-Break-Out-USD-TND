@@ -194,7 +194,7 @@ The project includes comprehensive performance analysis across different paramet
 
 ### Head and Shoulders (H&S) Performance
 
-![H&S Performance Analysis](examples/hs_performance.png)
+![H&S Performance Analysis](examples/HS.png)
 
 **Key Findings:**
 - **Number of Patterns Found**: Varies significantly with order parameter (5-30 patterns detected)
@@ -206,7 +206,7 @@ The project includes comprehensive performance analysis across different paramet
 
 ### Inverse Head and Shoulders (IH&S) Performance
 
-![IH&S Performance Analysis](examples/ihs_performance.png)
+![IH&S Performance Analysis](examples/IHS.png)
 
 **Key Findings:**
 - **Number of Patterns Found**: 5-20 patterns depending on sensitivity settings
