@@ -297,7 +297,7 @@ This is an **educational project** created for learning purposes:
 
 ## Author
 
-Rahma Ben Mbarek
+**Rahma Ben Mbarek**
 **Project Date**: 2024  
 **Documentation**: December 2025
 
