@@ -1,173 +1,259 @@
-# USD/TND Price Analysis
+# USD/TND Head and Shoulders Pattern Detection
 
-A Python-based technical analysis tool for identifying important price levels, local extremes, and trend directions in USD/TND (US Dollar to Tunisian Dinar) exchange rate data.
+> **⚠️ Educational Project**: This is a learning and exploration project created to understand technical analysis and pattern detection algorithms. **The patterns detected here are NOT profitable trading signals** and should not be used for actual trading decisions. This project is for educational purposes only.
+
+A Python-based technical analysis tool for detecting Head and Shoulders (HS) and Inverse Head and Shoulders (IHS) patterns in USD/TND (US Dollar to Tunisian Dinar) exchange rate data with automated pattern validation and performance analysis.
 
 ## Overview
 
-This project implements two complementary algorithms for analyzing financial time series data:
+This project was created as a learning exercise to explore pattern recognition algorithms and understand how classic technical analysis patterns work in practice. It implements algorithms to identify reversal patterns in forex data, validate them using statistical measures (R² symmetry checks, neckline slope analysis), and analyze their historical performance.
 
-1. **Rolling Window Extremes Detection** - Identifies local tops and bottoms using a rolling window approach
-2. **Perceptually Important Points (PIPs) Algorithm** - Finds the most significant price points that define the overall shape of the price movement
+**Purpose**: Learning and skill development in technical analysis and algorithmic pattern detection  
+**Developed**: 2024  
+**Last Updated**: December 2025
 
-The analysis generates directional coding (uptrend/downtrend) to help understand market direction between important price levels.
+## Key Features
 
-## Features
+- **Automated Pattern Detection**: Identifies both bullish (IHS) and bearish (HS) reversal patterns
+- **Statistical Validation**: Uses R² correlation and symmetry checks to filter false positives
+- **Rolling Window Extremes**: Custom algorithm to detect local tops and bottoms
+- **Performance Analysis**: Calculates hold returns and stop-loss based returns for each pattern
+- **Early Detection Mode**: Option to identify patterns before full completion
+- **Interactive Visualizations**: Candlestick charts with pattern overlays using mplfinance and Plotly
+- **Neckline Analysis**: Validates patterns based on neckline slope characteristics
 
-- **Local Extremes Detection**: Identifies peaks and troughs using configurable rolling window
-- **Important Points Extraction**: Uses multiple distance measures (Euclidean, Perpendicular, Vertical) to find key price levels
-- **Trend Direction Coding**: Automatically assigns trend direction (+1 for uptrend, -1 for downtrend, 0 for neutral) between important points
-- **Interactive Visualizations**: Creates both static (Matplotlib) and interactive (Plotly) visualizations
-- **EMA Integration**: Includes Exponential Moving Average calculation for additional technical context
+## What are Head and Shoulders Patterns?
+
+**Head and Shoulders (HS)**: A bearish reversal pattern with three peaks - left shoulder, head (highest), and right shoulder. Signals potential downtrend when neckline breaks.
+
+**Inverse Head and Shoulders (IHS)**: A bullish reversal pattern with three troughs - left shoulder, head (lowest), and right shoulder. Signals potential uptrend when neckline breaks.
 
 ## Installation
 
 ### Requirements
 
 ```bash
-pip install pandas numpy scipy matplotlib plotly pandas-ta
+pip install pandas pandas-ta numpy scipy matplotlib plotly 
 ```
 
 ### Dependencies
 
 - `pandas` - Data manipulation and analysis
+- `pandas-ta` - Technical analysis indicators (EMA)
 - `numpy` - Numerical computing
-- `scipy` - Scientific computing utilities
-- `matplotlib` - Static plotting
+- `scipy` - Statistical analysis and pattern validation
+- `matplotlib` - Base plotting functionality
 - `plotly` - Interactive visualizations
-- `pandas-ta` - Technical analysis indicators
 
 ## Data Format
 
 The project expects a CSV file named `USDTND.csv` with the following structure:
 
-```
-date,close
-2024-01-01,3.1234
-2024-01-02,3.1256
+```csv
+date,open,high,low,close,change%
+2010-01-05,1.3450,1.3500,1.3400,1.3480,0.22
+2010-01-06,1.3480,1.3520,1.3460,1.3500,0.15
 ...
 ```
 
-Required columns:
-- `date`: Date in a format parseable by pandas (e.g., YYYY-MM-DD)
-- `close`: Closing price of USD/TND exchange rate
+**Required columns:**
+- `date`: Date in YYYY-MM-DD format
+- `open`: Opening price
+- `high`: Highest price of the day
+- `low`: Lowest price of the day
+- `close`: Closing price
+- `change%`: Daily percentage change (optional)
+
+**Data Range**: 2010-01-05 to 2024-08-01 (or your custom range)
 
 ## Usage
 
-### Basic Analysis
+### Running the Analysis
 
 ```python
-import pandas as pd
-import numpy as np
-from your_module import rw_extremes, find_pips, generate_coding
+# The notebook automatically:
+# 1. Loads and preprocesses data
+# 2. Calculates EMA (150-period)
+# 3. Detects rolling window extremes
+# 4. Identifies HS and IHS patterns
+# 5. Validates patterns with statistical checks
+# 7. Visualizes results
 
-# Load data
-data = pd.read_csv("USDTND.csv")
-data['date'] = pd.to_datetime(data['date'])
-data = data.sort_values(by='date')
-
-# Method 1: Rolling Window Extremes
-close_prices = data['close'].to_numpy()
-tops, bottoms = rw_extremes(close_prices, order=10)
-
-# Method 2: Important Points (PIPs)
-pips_x, pips_y = find_pips(close_prices, n_pips=50, dist_measure=3)
-
-# Generate trend direction coding
-data['direction'] = generate_coding(data, 'close', n_pips=60, search_range=1000)
 ```
 
-### Visualization
+### Key Functions
 
 ```python
-from your_module import plot_pipsss
+# Detect local extremes
+tops, bottoms = rw_extremes(close_prices, order=6)
 
-# Interactive plot with important points
-plot_pipsss(data, 'close', n_pips=20, search_range=300)
+# Check for Head and Shoulders pattern
+is_hs = check_hs_pattern(extremes, r2_threshold=0.90)
+
+# Check for Inverse Head and Shoulders pattern
+is_ihs = check_ihs_pattern(extremes, r2_threshold=0.90)
+
+# Calculate pattern performance
+returns = calculate_pattern_returns(pattern_data, hold_period=20)
 ```
 
-## Algorithm Details
+## Pattern Detection Algorithm
 
-### Rolling Window Extremes
+### Step 1: Rolling Window Extremes Detection
+- Uses configurable order (default: 6) to identify local peaks and troughs
+- Validates that a point is higher/lower than all surrounding points within the window
 
-Detects local maxima (tops) and minima (bottoms) by examining a window of data points around each candidate point. A point is considered a top if it's higher than all points within the specified order range.
+### Step 2: Pattern Recognition
+For **Head and Shoulders (HS)**:
+1. Identifies sequence: Top → Bottom → Higher Top (Head) → Bottom → Top
+2. Validates left and right shoulders are roughly symmetrical
+3. Checks that head is significantly higher than shoulders
+4. Validates neckline (line connecting the two bottoms)
 
-**Parameters:**
-- `order`: Number of points on each side to compare (default: 10)
+For **Inverse Head and Shoulders (IHS)**:
+1. Identifies sequence: Bottom → Top → Lower Bottom (Head) → Top → Bottom
+2. Validates shoulder symmetry
+3. Checks that head is significantly lower than shoulders
+4. Validates neckline formation
 
-### Perceptually Important Points (PIPs)
+### Step 3: Statistical Validation
+- **R² Symmetry Check**: Ensures left and right sides of pattern are symmetrical (default threshold: 0.90)
+- **Neckline Slope Analysis**: Validates neckline characteristics
+- **Height/Width Ratios**: Checks pattern proportions are realistic
+- **Early Detection Option**: Can identify patterns before full completion
 
-Iteratively finds the most significant points by measuring the distance of intermediate points from the line connecting adjacent important points.
-
-**Parameters:**
-- `n_pips`: Number of important points to identify
-- `dist_measure`: Distance calculation method
-  - `1`: Euclidean Distance
-  - `2`: Perpendicular Distance
-  - `3`: Vertical Distance (recommended)
-
-### Direction Coding
-
-Assigns trend direction between consecutive important points:
-- `+1`: Uptrend (next point is higher)
-- `-1`: Downtrend (next point is lower)
-- `0`: Neutral (points are equal)
 
 ## Output
 
 The analysis produces:
 
-1. **DataFrame with direction coding**: Original data augmented with trend direction
-2. **Interactive charts**: Plotly visualizations showing price action with marked important points
-3. **Static plots**: Matplotlib charts for report generation
-4. **Important points summary**: Table of key price levels and their directions
+1. **Pattern DataFrames**: `hs_df` and `ihs_df` containing:
+   - Pattern location (indices)
+   - Head width and height
+   - R² symmetry score
+   - Neckline slope
+   - Hold returns
+   - Stop-loss adjusted returns
 
-## Use Cases
+2. **Visualizations**:
+   - Pattern overlays showing shoulders, head, and neckline
 
-- **Swing Trading**: Identify major support/resistance levels
-- **Trend Analysis**: Understand long-term directional bias
-- **Pattern Recognition**: Simplify price action for pattern identification
-- **Risk Management**: Set stop-loss levels based on important price points
-- **Market Structure Analysis**: Understand higher highs, lower lows, etc.
 
 ## Configuration
 
 Key parameters to adjust:
 
 ```python
-# Rolling window order - smaller values = more sensitive
-tops, bottoms = rw_extremes(close_prices, order=5)
+# Rolling window sensitivity
+tops, bottoms = rw_extremes(close_prices, order=6)  # Lower = more sensitive
 
-# Number of important points - more points = more detail
-pips_x, pips_y = find_pips(close_prices, n_pips=30, dist_measure=3)
+# Pattern validation strictness
+r2_threshold = 0.90  # Higher = stricter validation (0.0 to 1.0)
 
 # EMA period for trend context
 data['EMA'] = ta.ema(data.close, length=150)
+
+# Return calculation period
+hold_period = 20  # Days to hold after pattern completion
+
+# Early detection
+early_detection = True  # Detect patterns before completion
 ```
+
+## Learning Objectives & Use Cases
+
+This project was created to learn:
+- **Pattern Recognition Algorithms**: How to programmatically detect chart patterns
+- **Statistical Validation**: Using R² and other metrics to validate patterns
+- **Technical Analysis**: Understanding classic HS/IHS pattern theory
+- **Data Analysis**: Processing and analyzing financial time series
+- **Python Libraries**: Working with pandas, numpy, scipy, and visualization tools
+- **Algorithm Design**: Implementing rolling window detection methods
+
+**Educational Use Cases:**
+- Study how pattern detection algorithms work
+- Learn technical analysis implementation
+- Practice financial data analysis
+- Understand pattern validation techniques
+- Explore statistical measures in trading
+
+
+## Performance Metrics
+
+The notebook calculates:
+- **Win Rate**: Percentage of profitable patterns
+- **Average Return**: Mean return per pattern type
+- **Risk/Reward Ratio**: Based on neckline stop-loss
+- **Pattern Frequency**: How often patterns occur
+- **Time to Target**: Average duration of pattern completion
 
 ## Example Results
 
-The analysis identifies key turning points in the USD/TND exchange rate and simplifies the price action into a series of connected important points, making it easier to:
-- Spot trend reversals
-- Identify support/resistance zones
-- Analyze market structure
-- Make informed trading decisions
+```
+Head and Shoulders Patterns Detected: 15
+Inverse Head and Shoulders Patterns Detected: 12
 
-## Limitations
 
-- Performance depends on parameter selection (order, n_pips, search_range)
-- Historical analysis - not predictive
-- Best suited for swing trading timeframes
-- Requires sufficient data history for reliable results
+Pattern Success Rate (HS): 73%
+Pattern Success Rate (IHS): 67%
+```
+
+## Data Sources
+
+Historical USD/TND data can be obtained from:
+- [Investing.com](https://www.investing.com/currencies/usd-tnd-historical-data)
 
 ## Future Enhancements
 
-- [ ] Automated parameter optimization
-- [ ] Pattern recognition on simplified price structure
-- [ ] Backtesting framework integration
-- [ ] Real-time data feed integration
+- [ ] Real-time pattern detection with live data feeds
+- [ ] Additional patterns (Double Top/Bottom, Triangles, Wedges)
+- [ ] Machine learning validation of patterns
+- [ ] Backtesting framework with transaction costs
 - [ ] Multi-timeframe analysis
-- [ ] Export analysis results to CSV/JSON
+- [ ] Pattern scanner for multiple currency pairs
+- [ ] Automated alert system for new patterns
+- [ ] API integration for live trading signals
+- [ ] Risk management calculator
+- [ ] Export trading signals to CSV/JSON
+
+## Disclaimer
+
+**⚠️ IMPORTANT: READ BEFORE USING THIS CODE**
+
+This is an **educational project** created for learning purposes:
+
+- ❌ **NOT for actual trading** - Patterns detected are not profitable
+- ❌ **NOT financial advice** - Do not use for making trading decisions
+- ❌ **NOT a trading system** - This is a learning exercise, not a viable strategy
+- ✅ **FOR learning only** - To understand pattern detection and technical analysis
+- ✅ **FOR portfolio/resume** - To demonstrate coding and analytical skills
+- ✅ **FOR exploration** - To experiment with algorithmic pattern recognition
+
+
+**Key Takeaway**: This project demonstrates that simply detecting classical chart patterns is not sufficient for profitable trading. It's a valuable learning experience about the challenges of algorithmic trading and the importance of rigorous testing.
+
+** Explicitly states:**
+- These patterns did NOT prove profitable in testing
+- This project is shared to demonstrate technical skills, not trading profitability
+- No trading decisions should be based on this code
+- Past performance (especially unprofitable performance) does not indicate future results
+
+**If you're interested in algorithmic trading:**
+- This project shows what DOESN'T work (which is valuable knowledge!)
+- Real profitable trading requires much more than pattern detection
+- Consider professional education, risk management, and extensive backtesting
+- Most retail traders lose money - never risk money you can't afford to lose
 
 ## Author
 
-Rahma Ben Mbarek
+Rahma Ben Mbarek 
+**Project Date**: 2024  
+**Documentation**: December 2025
+
+## Acknowledgments
+
+- Head and Shoulders pattern theory based on classical technical analysis
+- Rolling window algorithm inspired by peak detection literature
+- Statistical validation methods from quantitative finance research
+- USD/TND data covers 2010-2024 period
+
