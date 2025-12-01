@@ -10,7 +10,6 @@ This project was created as a learning exercise to explore pattern recognition a
 
 **Purpose**: Learning and skill development in technical analysis and algorithmic pattern detection  
 **Developed**: 2024  
-**Last Updated**: December 2025
 
 ## Key Features
 
