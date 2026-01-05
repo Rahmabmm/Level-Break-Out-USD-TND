@@ -268,25 +268,8 @@ Historical USD/TND data can be obtained from:
 
 
 ## Disclaimer
-
-**⚠️ IMPORTANT: READ BEFORE USING THIS CODE**
-
 This is an **educational project** created for learning purposes:
 
-- ❌ **NOT for actual trading** - Patterns detected are not profitable
-- ❌ **NOT financial advice** - Do not use for making trading decisions
-- ❌ **NOT a trading system** - This is a learning exercise, not a viable strategy
-- ❌ **Not Profitable**: Historical analysis shows patterns did not produce consistent profits
-- ✅ **FOR learning only** - To understand pattern detection and technical analysis
-- ✅ **FOR portfolio/resume** - To demonstrate coding and analytical skills
-- ✅ **FOR exploration** - To experiment with algorithmic pattern recognition
-
-**The author explicitly states:**
-- These patterns did NOT prove profitable in testing
-- This project is shared to demonstrate technical skills, not trading profitability
-- No trading decisions should be based on this code
-- Past performance (especially unprofitable performance) does not indicate future results
-- The author takes no responsibility for any financial decisions made using this code
 
 **If you're interested in algorithmic trading:**
 - This project shows what DOESN'T work (which is valuable knowledge!)
