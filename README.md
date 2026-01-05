@@ -230,7 +230,7 @@ The project includes comprehensive performance analysis across different paramet
 
 ### Critical Observations
 
-⚠️ **Why This Strategy Doesn't Work:**
+ **Why This Strategy Doesn't Work:**
 
 - **Parameter Sensitivity**: Small changes in detection parameters produce wildly different results
 - **Low Win Rates**: Most configurations yield 40-50% win rates (worse than random)
